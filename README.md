@@ -1,4 +1,4 @@
-# Calculate IAA and Write final corpora on Linguistic Synesthesia in Poems Across Different Time Periods
+# IAA Calculation and Final Corpora Generation for Linguistic Synesthesia in Poems
 
 This repository contains the code to compute IAA based on multiple annotators' aggregated Cohen's kappa on the annotations of linguistic or literary synesthesia. 90 instances were retrieved from the work of three different authors, namely Shakespeare's Poems, Emily Dickinson's Poetry and T.S. Eliot's Poems, with 30 instances each. Two rounds of annotations were performed on the whole data, first with 3 annotators and later one with an extra 3 annotators. IAA is calculated for each author as well as a whole. 
 
