@@ -98,28 +98,6 @@ def get_lists_from_columns(df, columns):
     return lists
 
 
-#def compute_cohen_kappa_all_combinations(list_of_lists):
-#    """
-#    Compute Cohen's kappa score for all combinations of lists.
-#    Return a list of tuples containing the names of the annotations being compared and their corresponding Cohen's kappa scores.
-
-#    This function computes the Cohen's kappa score for all combinations of lists
-#    in the input list_of_lists. Each list is compared with every other list except itself.
-
-#    Parameters:
-#    - list_of_lists (list): a list of lists containing the annotations to be compared.
-#    """
-    
-#    results = []
-#    for i, ann1 in enumerate(list_of_lists):
-#        for j, ann2 in enumerate(list_of_lists):
-#            if i != j:  # Avoid comparing a list with itself
-#                kappa = cohen_kappa_score(ann1, ann2)
-#                results.append((f"ann{i+1}", f"ann{j+1}", round(kappa, 2)))
-#    return results
-
-
-
 def compute_cohen_kappa_all_combinations(list_of_lists):
     """
     Compute Cohen's kappa score for all combinations of lists.
