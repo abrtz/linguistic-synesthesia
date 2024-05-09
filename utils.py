@@ -98,6 +98,28 @@ def get_lists_from_columns(df, columns):
     return lists
 
 
+#def compute_cohen_kappa_all_combinations(list_of_lists):
+#    """
+#    Compute Cohen's kappa score for all combinations of lists.
+#    Return a list of tuples containing the names of the annotations being compared and their corresponding Cohen's kappa scores.
+
+#    This function computes the Cohen's kappa score for all combinations of lists
+#    in the input list_of_lists. Each list is compared with every other list except itself.
+
+#    Parameters:
+#    - list_of_lists (list): a list of lists containing the annotations to be compared.
+#    """
+    
+#    results = []
+#    for i, ann1 in enumerate(list_of_lists):
+#        for j, ann2 in enumerate(list_of_lists):
+#            if i != j:  # Avoid comparing a list with itself
+#                kappa = cohen_kappa_score(ann1, ann2)
+#                results.append((f"ann{i+1}", f"ann{j+1}", round(kappa, 2)))
+#    return results
+
+
+
 def compute_cohen_kappa_all_combinations(list_of_lists):
     """
     Compute Cohen's kappa score for all combinations of lists.
@@ -118,7 +140,7 @@ def compute_cohen_kappa_all_combinations(list_of_lists):
     return results
 
 
-def compute_iaa(list_of_lists):
+def compute_iaa_cohens_kappa(list_of_lists):
     """
     Compute the inter-annotator agreement using Cohen's kappa for multiple annotators.
     Each annotator is compared with every other annotator except itself.
@@ -171,7 +193,7 @@ def analyze_corner_cases(df, corner_cases,columns,author=None):
     kappa_results = compute_cohen_kappa_all_combinations(corner_list_of_annotations)
 
     # Computing Inter-Annotator Agreement (IAA) for corner cases
-    iaa = compute_iaa(corner_list_of_annotations)
+    iaa = compute_iaa_cohens_kappa(corner_list_of_annotations)
 
     # Displaying the results
     for ann1, ann2, kappa in kappa_results:
@@ -185,6 +207,45 @@ def analyze_corner_cases(df, corner_cases,columns,author=None):
     else:
         print(f"All instances' corner cases Inter-Annotator Agreement (Cohen's kappa):", iaa)
 
+
+def analyze_regular_cases(df, reg_cases,columns,author=None):
+    """
+    Analyzes regular cases in a DataFrame and computes Inter-Annotator Agreement (IAA) 
+    with Cohen's kappa for each pair of annotators and the average Cohen's kappa.
+    Print the id of the annotators compared and their corresponding Cohen's kappa scores 
+    and the computed averaged Inter-Annotator Agreement (IAA).
+    
+    Parameters:
+    - df (DataFrame): the DataFrame containing the data.
+    - reg_cases (list): a list of regular cases.
+    - columns (list): a list of column names from which to extract lists.
+    - author (str, optional): the author's name. Defaults to None prints all instances.
+    """
+    
+    # Extracting regular case annotations
+    reg_case_annotations = [row for _, row in df.iterrows() if not any(item in row.values for item in corner_cases)]
+    reg_case_annotations = pd.DataFrame(reg_case_annotations, columns=df.columns).reset_index(drop=True)
+
+    # Extracting lists from columns
+    corner_list_of_annotations = get_lists_from_columns(reg_case_annotations, columns)
+
+    # Computing Cohen's kappa for regular cases
+    kappa_results = compute_cohen_kappa_all_combinations(corner_list_of_annotations)
+
+    # Computing Inter-Annotator Agreement (IAA) for regualr cases
+    iaa = compute_iaa_cohens_kappa(corner_list_of_annotations)
+
+    # Displaying the results
+    for ann1, ann2, kappa in kappa_results:
+        print(f"Cohen's kappa between {ann1} and {ann2}: {kappa}")
+
+    print()
+    
+    if author != None:
+        print(f"{author}'s regular cases Inter-Annotator Agreement (Cohen's kappa):", iaa)
+
+    else:
+        print(f"All instances' regular cases Inter-Annotator Agreement (Cohen's kappa):", iaa)
 
 def analyze_all_cases(df, columns, author=None):
     """
@@ -206,7 +267,7 @@ def analyze_all_cases(df, columns, author=None):
     kappa_results = compute_cohen_kappa_all_combinations(list_of_annotations)
     
     # Computing Inter-Annotator Agreement (IAA) for all cases
-    iaa = compute_iaa(list_of_annotations)
+    iaa = compute_iaa_cohens_kappa(list_of_annotations)
     
     # Displaying the results
     if author:
@@ -220,47 +281,6 @@ def analyze_all_cases(df, columns, author=None):
     print("Inter-Annotator Agreement (Cohen's kappa) - all cases:", iaa)
     print('----------------------------------------------')
     
-
-
-
-def analyze_regular_cases(df, corner_cases,columns,author=None):
-    """
-    Analyzes regular cases in a DataFrame and computes Inter-Annotator Agreement (IAA) 
-    with Cohen's kappa for each pair of annotators and the average Cohen's kappa.
-    Print the id of the annotators compared and their corresponding Cohen's kappa scores 
-    and the computed averaged Inter-Annotator Agreement (IAA).
-    
-    Parameters:
-    - df (DataFrame): the DataFrame containing the data.
-    - corner_cases (list): a list of corner cases.
-    - columns (list): a list of column names from which to extract lists.
-    - author (str, optional): the author's name. Defaults to None prints all instances.
-    """
-    
-    # Extracting corner case annotations
-    reg_case_annotations = [row for _, row in df.iterrows() if not any(item in row.values for item in corner_cases)]
-    reg_case_annotations = pd.DataFrame(reg_case_annotations, columns=df.columns).reset_index(drop=True)
-
-    # Extracting lists from columns
-    corner_list_of_annotations = get_lists_from_columns(reg_case_annotations, columns)
-
-    # Computing Cohen's kappa for corner cases
-    kappa_results = compute_cohen_kappa_all_combinations(corner_list_of_annotations)
-
-    # Computing Inter-Annotator Agreement (IAA) for corner cases
-    iaa = compute_iaa(corner_list_of_annotations)
-
-    # Displaying the results
-    for ann1, ann2, kappa in kappa_results:
-        print(f"Cohen's kappa between {ann1} and {ann2}: {kappa}")
-
-    print()
-    
-    if author != None:
-        print(f"{author}'s regular cases Inter-Annotator Agreement (Cohen's kappa):", iaa)
-
-    else:
-        print(f"All instances' regular cases Inter-Annotator Agreement (Cohen's kappa):", iaa)
 
 
 def analyze_cases(df, corner_cases, columns, author=None):
