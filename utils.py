@@ -223,7 +223,7 @@ def analyze_regular_cases(df, reg_cases,columns,author=None):
     """
     
     # Extracting regular case annotations
-    reg_case_annotations = [row for _, row in df.iterrows() if not any(item in row.values for item in corner_cases)]
+    reg_case_annotations = [row for _, row in df.iterrows() if not any(item in row.values for item in reg_cases)]
     reg_case_annotations = pd.DataFrame(reg_case_annotations, columns=df.columns).reset_index(drop=True)
 
     # Extracting lists from columns
